@@ -2,12 +2,14 @@ import matplotlib.cm as cm
 import matplotlib.colors as colors
 from matplotlib import colormaps
 import folium
+import branca
 
 class SlopeVisualizer:
     def __init__(self, df):
         self.df = df
         self._setup_colors()
         self.map = self._draw_map()
+        self.add_legend()
 
     def _setup_colors(self):
         self.min_speed = self.df['speed_m/s'].min()
@@ -38,8 +40,18 @@ class SlopeVisualizer:
                 folium.PolyLine([p1, p2], color="gray", weight=4).add_to(map)
             else:
                 folium.PolyLine([p1, p2], color=color_hex, weight=4).add_to(map)
+
         return map
     
+    def add_legend(self):
+        colormap = branca.colormap.LinearColormap(
+            colors=[self.cmap(self.norm(v)) for v in [self.min_speed, self.max_speed]],
+            vmin=self.min_speed,
+            vmax=self.max_speed
+        )
+        colormap.caption = 'Speed (m/s)'
+        colormap.add_to(self.map)
+        
     def show_map(self):
         return self.map
 
