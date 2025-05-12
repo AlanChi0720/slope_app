@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>分析結果</title>
+</head>
+<body>
+    <h1>分析結果</h1>
+    <h2>速度與坡度分析圖</h2>
+    <img src="{{ url_for('static', filename='summary.png') }}" alt="Summary Plot" width="800">
+    
+    <h2>各滑雪段落圖（分開顯示）</h2>
+    <img src="{{ url_for('static', filename='summary_sep.png') }}" alt="Detailed Plot" width="800">
+
+    <h2>滑雪地圖</h2>
+    <iframe src="{{ url_for('static', filename='ski_map.html') }}" width="800" height="600"></iframe>
+</body>
+</html>

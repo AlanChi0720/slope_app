@@ -107,7 +107,8 @@ class SlopeSummary:
 
         plt.title("All Ski Runs: Elevation and Speed")
         plt.tight_layout()
-        plt.show()
+        plt.savefig("static/summary.png")  # 把圖存成靜態檔案
+        plt.close()  # 關閉圖表，避免 memory overflow
 
             
 
@@ -194,4 +195,5 @@ class SlopeSummary:
             fig.delaxes(axs[j])
 
         plt.tight_layout()
-        plt.show()
+        plt.savefig("static/summary.png")  # 把圖存成靜態檔案
+        plt.close()  # 關閉圖表，避免 memory overflow
