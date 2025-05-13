@@ -14,7 +14,7 @@ os.makedirs("static", exist_ok=True)
 # create a app object
 app = Flask(
     __name__,
-    static_folder = "analyzed_result" , # 靜態檔案資料夾名稱(可以自己決定)
+    static_folder = "static" , # 靜態檔案資料夾名稱(可以自己決定)
 )
 
 

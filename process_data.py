@@ -78,7 +78,7 @@ class SlopeSummary:
         fig, ax1 = plt.subplots(figsize=(10, 4))
         ax2 = ax1.twinx()
 
-        df = self.df[self.df['is_lift']].copy()
+        df = self.df[self.df['is_lift'] == False].copy()
 
         for segment_id, seg_df in df.groupby('segment_id'):
             # calculate each run's total_distance
@@ -138,7 +138,7 @@ class SlopeSummary:
         n_runs = len(runs)
 
         # 設定每行顯示的子圖數量
-        ncols = 2  # 每行放 2 個小圖
+        ncols = 1  # 每行放 2 個小圖
         nrows = math.ceil(n_runs / ncols)
 
         # 建立子圖
@@ -195,5 +195,5 @@ class SlopeSummary:
             fig.delaxes(axs[j])
 
         plt.tight_layout()
-        plt.savefig("static/summary.png")  # 把圖存成靜態檔案
+        plt.savefig("static/summary_sep.png")  # 把圖存成靜態檔案
         plt.close()  # 關閉圖表，避免 memory overflow
