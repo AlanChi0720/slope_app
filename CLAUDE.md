@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Available Skills
+
+- `/frontend-design` — Generate distinctive, production-grade frontend UI (components, pages, layouts).
+- `/webapp-testing` — Test the running app with Playwright (screenshots, browser logs, UI verification).
+
 ## Running the App
 
 All commands must be run from the project root using the project venv:

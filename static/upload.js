@@ -29,14 +29,19 @@ dropZone.addEventListener('drop', (e) => {
   dropZone.classList.remove('drag-over');
   const files = e.dataTransfer.files;
   if (files.length > 0) {
+    let assigned = false;
     try {
       const dt = new DataTransfer();
       dt.items.add(files[0]);
       fileInput.files = dt.files;
-    } catch (_) {
-      // DataTransfer assignment not supported — file name display only
+      assigned = fileInput.files.length > 0 && fileInput.files[0].name === files[0].name;
+    } catch (_) {}
+    if (assigned) {
+      showFileName(files[0].name);
+    } else {
+      fileNameDisplay.textContent = 'Drag-and-drop not supported — please use the file picker.';
+      fileNameDisplay.classList.remove('has-file');
     }
-    showFileName(files[0].name);
   }
 });
 
