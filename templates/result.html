@@ -1,17 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>分析結果</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slope — Results</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>分析結果</h1>
-    <h2>速度與坡度分析圖</h2>
-    <img src="{{ url_for('static', filename='summary.png') }}" alt="Summary Plot" width="800">
-    
-    <h2>各滑雪段落圖（分開顯示）</h2>
-    <img src="{{ url_for('static', filename='summary_sep.png') }}" alt="Detailed Plot" width="800">
+  <div class="container">
 
-    <h2>滑雪地圖</h2>
-    <iframe src="{{ url_for('static', filename='ski_map.html') }}" width="800" height="600"></iframe>
+    <header class="page-header">
+      <div class="logo-small">⛷ SLOPE</div>
+      <a href="/" class="back-link">&#8592; Upload Another File</a>
+    </header>
+
+    <!-- Session Summary -->
+    <section>
+      <h2 class="section-title">Session Summary</h2>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Runs</div>
+          <div class="stat-value">{{ stats.total_runs }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Distance</div>
+          <div class="stat-value">{{ "%.1f" | format(stats.total_distance_m / 1000) }}</div>
+          <div class="stat-unit">km</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Vertical</div>
+          <div class="stat-value">{{ stats.total_vertical_drop_m | int }}</div>
+          <div class="stat-unit">m</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg Speed</div>
+          <div class="stat-value">{{ stats.overall_avg_speed_kmh }}</div>
+          <div class="stat-unit">km/h</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Top Speed</div>
+          <div class="stat-value">{{ stats.overall_max_speed_kmh }}</div>
+          <div class="stat-unit">km/h</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Per-Run Breakdown -->
+    <section>
+      <h2 class="section-title">Per-Run Breakdown</h2>
+      <div class="table-scroll">
+        <table class="runs-table">
+          <thead>
+            <tr>
+              <th>Run</th>
+              <th>Distance (m)</th>
+              <th>Vertical Drop (m)</th>
+              <th>Avg Slope (%)</th>
+              <th>Duration</th>
+              <th>Avg Speed (km/h)</th>
+              <th>Top Speed (km/h)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for run in stats.runs %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ run.distance_m }}</td>
+              <td>{{ run.elevation_drop_m }}</td>
+              <td>{{ "%.1f" | format(run.avg_gradient_pct | abs) }}</td>
+              <td>{{ run.duration_s // 60 }}:{{ "%02d" | format(run.duration_s % 60) }}</td>
+              <td>{{ run.avg_speed_kmh }}</td>
+              <td>{{ run.max_speed_kmh }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- GPS Track Map -->
+    <section>
+      <h2 class="section-title">GPS Track</h2>
+      <iframe class="map-frame"
+              src="{{ url_for('static', filename='ski_map.html') }}"
+              title="Ski GPS Map"></iframe>
+    </section>
+
+    <!-- Charts -->
+    <section>
+      <h2 class="section-title">Elevation &amp; Speed Charts</h2>
+      <h3 class="chart-subtitle">All Runs Combined</h3>
+      <img class="chart-img"
+           src="{{ url_for('static', filename='summary.png') }}"
+           alt="All runs combined chart">
+      <h3 class="chart-subtitle">Individual Runs</h3>
+      <img class="chart-img"
+           src="{{ url_for('static', filename='summary_sep.png') }}"
+           alt="Per-run charts">
+    </section>
+
+  </div>
 </body>
 </html>

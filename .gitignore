@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+
+# Flask / app generated outputs
+static/ski_map.html
+static/stats.json
+static/summary.png
+static/summary_sep.png
+
+# Uploaded user files
+uploads/
+
+# Claude Code local settings
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db

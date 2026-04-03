@@ -1,13 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Upload GPX File</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slope — Ski GPS Analyzer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Upload your GPX file</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".gpx">
-        <input type="submit" value="Upload">
-    </form>
+  <div class="upload-page">
+    <div class="upload-card">
+      <div class="logo">⛷ SLOPE</div>
+      <p class="tagline">Upload your GPX file to analyze your ski session</p>
+
+      {% if error %}
+      <div class="error-banner">
+        {% if error == 'no_file' %}No file was included in the request.
+        {% elif error == 'no_selection' %}Please select a file before uploading.
+        {% elif error == 'invalid_type' %}Only .gpx files are supported.
+        {% else %}An unexpected error occurred. Please try again.
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+        <div class="drop-zone" id="drop-zone">
+          <div class="drop-zone-icon">&#8679;</div>
+          <p class="drop-zone-text">Drag &amp; drop your .gpx file here</p>
+          <p class="drop-zone-sub">or <span class="browse-link">browse</span></p>
+          <input type="file" name="file" id="file-input" accept=".gpx" hidden>
+        </div>
+
+        <div class="file-name" id="file-name-display">No file selected</div>
+
+        <button type="submit" class="btn-upload" id="submit-btn">
+          <span class="spinner"></span>
+          <span class="btn-label">Analyze Run</span>
+        </button>
+      </form>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='upload.js') }}"></script>
 </body>
 </html>

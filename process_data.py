@@ -142,7 +142,7 @@ class SlopeSummary:
         nrows = math.ceil(n_runs / ncols)
 
         # 建立子圖
-        fig, axs = plt.subplots(nrows=nrows, ncols=ncols, figsize=(14, nrows * 5))
+        fig, axs = plt.subplots(nrows=nrows, ncols=ncols, figsize=(14, nrows * 5), squeeze=False)
 
         # 保證 axs 是一個一維陣列，不管行列數是多少
         axs = axs.flatten()
@@ -197,3 +197,44 @@ class SlopeSummary:
         plt.tight_layout()
         plt.savefig("static/summary_sep.png")  # 把圖存成靜態檔案
         plt.close()  # 關閉圖表，避免 memory overflow
+
+    def get_stats(self):
+        df = self.df[self.df['is_lift'] == False].copy()
+        runs = []
+        for segment_id, seg_df in df.groupby('segment_id'):
+            seg_df = seg_df.copy()
+            total_distance = seg_df['distance_to_prev(m)'].fillna(0).sum()
+            start_ele = seg_df['elevation'].iloc[0]
+            end_ele = seg_df['elevation'].iloc[-1]
+            elevation_drop = start_ele - end_ele
+            avg_gradient = (
+                (end_ele - start_ele) / total_distance * 100
+                if total_distance > 0 else 0.0
+            )
+            avg_speed_ms = float(seg_df['speed_m/s'].mean())
+            max_speed_ms = float(seg_df['speed_m/s'].max())
+            valid_times = seg_df['time'].dropna()
+            if len(valid_times) >= 2:
+                duration_s = (valid_times.iloc[-1] - valid_times.iloc[0]).total_seconds()
+            else:
+                duration_s = 0.0
+
+            runs.append({
+                "run_number": int(segment_id),
+                "distance_m": round(total_distance, 1),
+                "elevation_drop_m": round(elevation_drop, 1),
+                "avg_gradient_pct": round(avg_gradient, 2),
+                "avg_speed_kmh": round(avg_speed_ms * 3.6, 1),
+                "max_speed_kmh": round(max_speed_ms * 3.6, 1),
+                "duration_s": int(duration_s),
+            })
+
+        all_speeds = df['speed_m/s'].dropna()
+        return {
+            "total_runs": len(runs),
+            "total_distance_m": round(sum(r["distance_m"] for r in runs), 1),
+            "total_vertical_drop_m": round(sum(r["elevation_drop_m"] for r in runs), 1),
+            "overall_avg_speed_kmh": round(float(all_speeds.mean()) * 3.6, 1),
+            "overall_max_speed_kmh": round(float(all_speeds.max()) * 3.6, 1),
+            "runs": runs,
+        }
